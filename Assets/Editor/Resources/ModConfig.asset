@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615501dbe4f3fe94fbf4b564abb10237, type: 3}
+  m_Name: ModConfig
+  m_EditorClassIdentifier: 
+  id: lightspeed
+  title: Lightspeed
+  description: "Lightspeed 1.01\n\u201CMr La Forge, set phasers to explode\u2026\u201D\n\nModule
+    ID: lightspeed\n\nCreated by: Royal_Flu$h\n\nSpecial thanks to CaitSith2 for his
+    coding assistance during the live stream build.\nThanks to SpaceScrew for testing
+    many builds to fix the broken material issue.\nThanks to Timwi for the manual
+    image.\n\nManual available here: https://ktane.timwi.de/HTML/Lightspeed.html"
+  version: 1.01
+  outputFolder: build
+  previewImage: {fileID: 2800000, guid: cbaf707a188b4461f997f9bfc4945bfb, type: 3}

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: bf2f3030f00214654b84019947c57804
+timeCreated: 1529258369
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Swiss 911 Ultra Compressed
+  fontNames:
+  - Swiss 911 Ultra Compressed
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
