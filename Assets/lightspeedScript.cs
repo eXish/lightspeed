@@ -167,6 +167,8 @@ public class lightspeedScript : MonoBehaviour
     public Material[] countdownMat;
     private bool destructActive;
     private bool destructionOperation;
+	private bool destructByTwitch;
+	private bool shipDestroyed;
     private bool engageActive;
     private bool engageOperation;
     private bool moduleSolved;
@@ -215,6 +217,7 @@ public class lightspeedScript : MonoBehaviour
         }
         engageSubmitButton.OnInteract += delegate () { onEngageSubmitButton(); return false; };
         destructButton.OnInteract += delegate () { onDestructButton(); return false; };
+	    Bomb.OnBombExploded += delegate() { shipDestroyed = true; };
     }
 
     void Start()
@@ -1306,148 +1309,47 @@ public class lightspeedScript : MonoBehaviour
         yield return new WaitForSeconds(2f);
         if (engageActive == false)
         {
+	        yield break;
+		}
 
-        }
-        else
-        {
-            countdownBars[9].material = countdownMat[1];
-            yield return new WaitForSeconds(0.5f);
-            if (engageActive == false)
-            {
+	    for (int i = 9; i >= 0; i--)
+	    {
+			if(i % 2 == 0) Audio.PlaySoundAtTransform("warpAlarm", transform);
+		    countdownBars[i].material = countdownMat[1];
+		    yield return new WaitForSeconds(0.5f);
+		    if (engageActive == false)
+		    {
+			    yield break;
+		    }
+		}
 
-            }
-            else
-            {
-                Audio.PlaySoundAtTransform("warpAlarm", transform);
-                countdownBars[8].material = countdownMat[1];
-                yield return new WaitForSeconds(0.5f);
-                if (engageActive == false)
-                {
-
-                }
-                else
-                {
-                    countdownBars[7].material = countdownMat[1];
-                    yield return new WaitForSeconds(0.5f);
-                    if (engageActive == false)
-                    {
-
-                    }
-                    else
-                    {
-                        Audio.PlaySoundAtTransform("warpAlarm", transform);
-                        countdownBars[6].material = countdownMat[1];
-                        yield return new WaitForSeconds(0.5f);
-                        if (engageActive == false)
-                        {
-
-                        }
-                        else
-                        {
-                            countdownBars[5].material = countdownMat[1];
-                            yield return new WaitForSeconds(0.5f);
-                            if (engageActive == false)
-                            {
-
-                            }
-                            else
-                          {
-                              Audio.PlaySoundAtTransform("warpAlarm", transform);
-                              countdownBars[4].material = countdownMat[1];
-                              yield return new WaitForSeconds(0.5f);
-                              if (engageActive == false)
-                              {
-
-                              }
-                              else
-                              {
-                                  countdownBars[3].material = countdownMat[1];
-                                  yield return new WaitForSeconds(0.5f);
-                                  if (engageActive == false)
-                                  {
-
-                                  }
-                                  else
-                                  {
-                                      Audio.PlaySoundAtTransform("warpAlarm", transform);
-                                      countdownBars[2].material = countdownMat[1];
-                                      yield return new WaitForSeconds(0.5f);
-                                      if (engageActive == false)
-                                      {
-
-                                      }
-                                      else
-                                      {
-                                          countdownBars[1].material = countdownMat[1];
-                                          yield return new WaitForSeconds(0.5f);
-                                          if (engageActive == false)
-                                          {
-
-                                          }
-                                          else
-                                          {
-                                              Audio.PlaySoundAtTransform("warpAlarm", transform);
-                                              countdownBars[0].material = countdownMat[1];
-                                              yield return new WaitForSeconds(0.5f);
-                                              if (engageActive == false)
-                                              {
-
-                                              }
-                                              else
-                                              {
-                                                  if(warpDisplayText.text == correctWarpSpeed.ToString() && destinationDisplayText.text == correctPlanet && submittedOfficer == correctCrew && dataEncrypted)
-                                                  {
-                                                      GetComponent<KMBombModule>().HandlePass();
-                                                      Audio.PlaySoundAtTransform("warp", transform);
-                                                      Debug.LogFormat("[Lightspeed #{0}] Module solved. Live long and prosper.", moduleId);
-                                                      moduleSolved = true;
-                                                  }
-                                                  else
-                                                  {
-                                                      GetComponent<KMBombModule>().HandleStrike();
-                                                      Debug.LogFormat("[Lightspeed #{0}] Warning: Input incorrect. Warp drive was set to {1}. Destination was set to {2}. Ranking officer was set to {3}. Data encryption was {4}.", moduleId, warpDisplayText.text, destinationDisplayText.text, submittedOfficer, dataEncrypted);
-                                                      Audio.PlaySoundAtTransform("cancelEngage", transform);
-                                                      engageSubmitButtonText.text = "Engage";
-                                                      StartCoroutine(cancelEngage());
-                                                      engageActive = false;
-                                                  }
-                                              }
-                                          }
-                                      }
-                                  }
-                              }
-                          }
-                        }
-                    }
-                }
-            }
-        }
+	    if(warpDisplayText.text == correctWarpSpeed.ToString() && destinationDisplayText.text == correctPlanet && submittedOfficer == correctCrew && dataEncrypted)
+	    {
+		    GetComponent<KMBombModule>().HandlePass();
+		    Audio.PlaySoundAtTransform("warp", transform);
+		    Debug.LogFormat("[Lightspeed #{0}] Module solved. Live long and prosper.", moduleId);
+		    moduleSolved = true;
+	    }
+	    else
+	    {
+		    GetComponent<KMBombModule>().HandleStrike();
+		    Debug.LogFormat("[Lightspeed #{0}] Warning: Input incorrect. Warp drive was set to {1}. Destination was set to {2}. Ranking officer was set to {3}. Data encryption was {4}.", moduleId, warpDisplayText.text, destinationDisplayText.text, submittedOfficer, dataEncrypted);
+		    Audio.PlaySoundAtTransform("cancelEngage", transform);
+		    engageSubmitButtonText.text = "Engage";
+		    StartCoroutine(cancelEngage());
+		    engageActive = false;
+	    }
     }
 
     IEnumerator cancelEngage()
     {
         engageOperation = true;
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[0].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[1].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[2].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[3].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[4].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[5].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[6].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[7].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[8].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[9].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
+	    yield return new WaitForSeconds(0.1f);
+		for (int i = 0; i < 10; i++)
+	    {
+		    countdownBars[i].material = countdownMat[0];
+		    yield return new WaitForSeconds(0.1f);
+		}
         engageOperation = false;
     }
 
@@ -1467,6 +1369,7 @@ public class lightspeedScript : MonoBehaviour
         else if(destructionOperation == false && engageActive == false && engageOperation == false)
         {
             destructActive = false;
+	        destructByTwitch = false;
             Audio.PlaySoundAtTransform("destructCancel", transform);
             StartCoroutine(cancelDestruct());
             destructButtonText.text = "Activate auto\ndestruct sequence";
@@ -1480,144 +1383,36 @@ public class lightspeedScript : MonoBehaviour
         yield return new WaitForSeconds(2f);
         if (destructActive == false)
         {
-
+	        yield break;
         }
-        else
-        {
-            Audio.PlaySoundAtTransform("destructAlarm", transform);
-            countdownBars[0].material = countdownMat[2];
-            yield return new WaitForSeconds(1.5f);
-            if (destructActive == false)
-            {
 
-            }
-            else
-            {
-                Audio.PlaySoundAtTransform("destructAlarm", transform);
-                countdownBars[1].material = countdownMat[2];
-                yield return new WaitForSeconds(1.5f);
-                if (destructActive == false)
-                {
+	    for (int i = 0; i < 10; i++)
+	    {
+		    Audio.PlaySoundAtTransform("destructAlarm", transform);
+		    countdownBars[i].material = countdownMat[2];
+		    yield return new WaitForSeconds(1.5f);
+		    if (destructActive == false)
+		    {
+			    yield break;
+		    }
+		}
 
-                }
-                else
-                {
-                    Audio.PlaySoundAtTransform("destructAlarm", transform);
-                    countdownBars[2].material = countdownMat[2];
-                    yield return new WaitForSeconds(1.5f);
-                    if (destructActive == false)
-                    {
-
-                    }
-                    else
-                    {
-                        Audio.PlaySoundAtTransform("destructAlarm", transform);
-                        countdownBars[3].material = countdownMat[2];
-                        yield return new WaitForSeconds(1.5f);
-                        if (destructActive == false)
-                        {
-
-                        }
-                        else
-                        {
-                            Audio.PlaySoundAtTransform("destructAlarm", transform);
-                            countdownBars[4].material = countdownMat[2];
-                            yield return new WaitForSeconds(1.5f);
-                            if (destructActive == false)
-                            {
-
-                            }
-                            else
-                          {
-                              Audio.PlaySoundAtTransform("destructAlarm", transform);
-                              countdownBars[5].material = countdownMat[2];
-                              yield return new WaitForSeconds(1.5f);
-                              if (destructActive == false)
-                              {
-
-                              }
-                              else
-                              {
-                                  Audio.PlaySoundAtTransform("destructAlarm", transform);
-                                  countdownBars[6].material = countdownMat[2];
-                                  yield return new WaitForSeconds(1.5f);
-                                  if (destructActive == false)
-                                  {
-
-                                  }
-                                  else
-                                  {
-                                      Audio.PlaySoundAtTransform("destructAlarm", transform);
-                                      countdownBars[7].material = countdownMat[2];
-                                      yield return new WaitForSeconds(1.5f);
-                                      if (destructActive == false)
-                                      {
-
-                                      }
-                                      else
-                                      {
-                                          Audio.PlaySoundAtTransform("destructAlarm", transform);
-                                          countdownBars[8].material = countdownMat[2];
-                                          yield return new WaitForSeconds(1.5f);
-                                          if (destructActive == false)
-                                          {
-
-                                          }
-                                          else
-                                          {
-                                              Audio.PlaySoundAtTransform("destructAlarm", transform);
-                                              countdownBars[9].material = countdownMat[2];
-                                              yield return new WaitForSeconds(1.5f);
-                                              if (destructActive == false)
-                                              {
-
-                                              }
-                                              else
-                                              {
-                                                  Debug.LogFormat("[Lightspeed #{0}] WARP CORE OVERLOAD. SHIP DESTROYED.", moduleId);
-                                                  int manyStrikes = 0;
-                                                  while(manyStrikes < 1000)
-                                                  {
-                                                      GetComponent<KMBombModule>().HandleStrike();
-                                                      manyStrikes++;
-                                                  }
-                                              }
-                                          }
-                                      }
-                                  }
-                              }
-                          }
-                        }
-                    }
-                }
-            }
-        }
+	    Debug.LogFormat("[Lightspeed #{0}] WARP CORE OVERLOAD. SHIP DESTROYED.", moduleId);
+	    while(!shipDestroyed && !destructByTwitch)
+	    {
+		    GetComponent<KMBombModule>().HandleStrike();
+	    }
     }
 
     IEnumerator cancelDestruct()
     {
         destructionOperation = true;
         yield return new WaitForSeconds(0.1f);
-        countdownBars[9].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[8].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[7].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[6].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[5].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[4].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[3].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[2].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[1].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[0].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
+	    for (int i = 9; i >= 0; i--)
+	    {
+		    countdownBars[i].material = countdownMat[0];
+		    yield return new WaitForSeconds(0.1f);
+	    }
         destructionOperation = false;
     }
 
