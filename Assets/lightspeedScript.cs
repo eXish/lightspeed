@@ -167,6 +167,8 @@ public class lightspeedScript : MonoBehaviour
     public Material[] countdownMat;
     private bool destructActive;
     private bool destructionOperation;
+	private bool destructByTwitch;
+	private bool shipDestroyed;
     private bool engageActive;
     private bool engageOperation;
     private bool moduleSolved;
@@ -215,6 +217,7 @@ public class lightspeedScript : MonoBehaviour
         }
         engageSubmitButton.OnInteract += delegate () { onEngageSubmitButton(); return false; };
         destructButton.OnInteract += delegate () { onDestructButton(); return false; };
+	    Bomb.OnBombExploded += delegate() { shipDestroyed = true; };
     }
 
     void Start()
@@ -1306,148 +1309,47 @@ public class lightspeedScript : MonoBehaviour
         yield return new WaitForSeconds(2f);
         if (engageActive == false)
         {
+	        yield break;
+		}
 
-        }
-        else
-        {
-            countdownBars[9].material = countdownMat[1];
-            yield return new WaitForSeconds(0.5f);
-            if (engageActive == false)
-            {
+	    for (int i = 9; i >= 0; i--)
+	    {
+			if(i % 2 == 0) Audio.PlaySoundAtTransform("warpAlarm", transform);
+		    countdownBars[i].material = countdownMat[1];
+		    yield return new WaitForSeconds(0.5f);
+		    if (engageActive == false)
+		    {
+			    yield break;
+		    }
+		}
 
-            }
-            else
-            {
-                Audio.PlaySoundAtTransform("warpAlarm", transform);
-                countdownBars[8].material = countdownMat[1];
-                yield return new WaitForSeconds(0.5f);
-                if (engageActive == false)
-                {
-
-                }
-                else
-                {
-                    countdownBars[7].material = countdownMat[1];
-                    yield return new WaitForSeconds(0.5f);
-                    if (engageActive == false)
-                    {
-
-                    }
-                    else
-                    {
-                        Audio.PlaySoundAtTransform("warpAlarm", transform);
-                        countdownBars[6].material = countdownMat[1];
-                        yield return new WaitForSeconds(0.5f);
-                        if (engageActive == false)
-                        {
-
-                        }
-                        else
-                        {
-                            countdownBars[5].material = countdownMat[1];
-                            yield return new WaitForSeconds(0.5f);
-                            if (engageActive == false)
-                            {
-
-                            }
-                            else
-                          {
-                              Audio.PlaySoundAtTransform("warpAlarm", transform);
-                              countdownBars[4].material = countdownMat[1];
-                              yield return new WaitForSeconds(0.5f);
-                              if (engageActive == false)
-                              {
-
-                              }
-                              else
-                              {
-                                  countdownBars[3].material = countdownMat[1];
-                                  yield return new WaitForSeconds(0.5f);
-                                  if (engageActive == false)
-                                  {
-
-                                  }
-                                  else
-                                  {
-                                      Audio.PlaySoundAtTransform("warpAlarm", transform);
-                                      countdownBars[2].material = countdownMat[1];
-                                      yield return new WaitForSeconds(0.5f);
-                                      if (engageActive == false)
-                                      {
-
-                                      }
-                                      else
-                                      {
-                                          countdownBars[1].material = countdownMat[1];
-                                          yield return new WaitForSeconds(0.5f);
-                                          if (engageActive == false)
-                                          {
-
-                                          }
-                                          else
-                                          {
-                                              Audio.PlaySoundAtTransform("warpAlarm", transform);
-                                              countdownBars[0].material = countdownMat[1];
-                                              yield return new WaitForSeconds(0.5f);
-                                              if (engageActive == false)
-                                              {
-
-                                              }
-                                              else
-                                              {
-                                                  if(warpDisplayText.text == correctWarpSpeed.ToString() && destinationDisplayText.text == correctPlanet && submittedOfficer == correctCrew && dataEncrypted)
-                                                  {
-                                                      GetComponent<KMBombModule>().HandlePass();
-                                                      Audio.PlaySoundAtTransform("warp", transform);
-                                                      Debug.LogFormat("[Lightspeed #{0}] Module solved. Live long and prosper.", moduleId);
-                                                      moduleSolved = true;
-                                                  }
-                                                  else
-                                                  {
-                                                      GetComponent<KMBombModule>().HandleStrike();
-                                                      Debug.LogFormat("[Lightspeed #{0}] Warning: Input incorrect. Warp drive was set to {1}. Destination was set to {2}. Ranking officer was set to {3}. Data encryption was {4}.", moduleId, warpDisplayText.text, destinationDisplayText.text, submittedOfficer, dataEncrypted);
-                                                      Audio.PlaySoundAtTransform("cancelEngage", transform);
-                                                      engageSubmitButtonText.text = "Engage";
-                                                      StartCoroutine(cancelEngage());
-                                                      engageActive = false;
-                                                  }
-                                              }
-                                          }
-                                      }
-                                  }
-                              }
-                          }
-                        }
-                    }
-                }
-            }
-        }
+	    if(warpDisplayText.text == correctWarpSpeed.ToString() && destinationDisplayText.text == correctPlanet && submittedOfficer == correctCrew && dataEncrypted)
+	    {
+		    GetComponent<KMBombModule>().HandlePass();
+		    Audio.PlaySoundAtTransform("warp", transform);
+		    Debug.LogFormat("[Lightspeed #{0}] Module solved. Live long and prosper.", moduleId);
+		    moduleSolved = true;
+	    }
+	    else
+	    {
+		    GetComponent<KMBombModule>().HandleStrike();
+		    Debug.LogFormat("[Lightspeed #{0}] Warning: Input incorrect. Warp drive was set to {1}. Destination was set to {2}. Ranking officer was set to {3}. Data encryption was {4}.", moduleId, warpDisplayText.text, destinationDisplayText.text, submittedOfficer, dataEncrypted);
+		    Audio.PlaySoundAtTransform("cancelEngage", transform);
+		    engageSubmitButtonText.text = "Engage";
+		    StartCoroutine(cancelEngage());
+		    engageActive = false;
+	    }
     }
 
     IEnumerator cancelEngage()
     {
         engageOperation = true;
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[0].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[1].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[2].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[3].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[4].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[5].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[6].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[7].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[8].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[9].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
+	    yield return new WaitForSeconds(0.1f);
+		for (int i = 0; i < 10; i++)
+	    {
+		    countdownBars[i].material = countdownMat[0];
+		    yield return new WaitForSeconds(0.1f);
+		}
         engageOperation = false;
     }
 
@@ -1467,6 +1369,7 @@ public class lightspeedScript : MonoBehaviour
         else if(destructionOperation == false && engageActive == false && engageOperation == false)
         {
             destructActive = false;
+	        destructByTwitch = false;
             Audio.PlaySoundAtTransform("destructCancel", transform);
             StartCoroutine(cancelDestruct());
             destructButtonText.text = "Activate auto\ndestruct sequence";
@@ -1480,144 +1383,36 @@ public class lightspeedScript : MonoBehaviour
         yield return new WaitForSeconds(2f);
         if (destructActive == false)
         {
-
+	        yield break;
         }
-        else
-        {
-            Audio.PlaySoundAtTransform("destructAlarm", transform);
-            countdownBars[0].material = countdownMat[2];
-            yield return new WaitForSeconds(1.5f);
-            if (destructActive == false)
-            {
 
-            }
-            else
-            {
-                Audio.PlaySoundAtTransform("destructAlarm", transform);
-                countdownBars[1].material = countdownMat[2];
-                yield return new WaitForSeconds(1.5f);
-                if (destructActive == false)
-                {
+	    for (int i = 0; i < 10; i++)
+	    {
+		    Audio.PlaySoundAtTransform("destructAlarm", transform);
+		    countdownBars[i].material = countdownMat[2];
+		    yield return new WaitForSeconds(1.5f);
+		    if (destructActive == false)
+		    {
+			    yield break;
+		    }
+		}
 
-                }
-                else
-                {
-                    Audio.PlaySoundAtTransform("destructAlarm", transform);
-                    countdownBars[2].material = countdownMat[2];
-                    yield return new WaitForSeconds(1.5f);
-                    if (destructActive == false)
-                    {
-
-                    }
-                    else
-                    {
-                        Audio.PlaySoundAtTransform("destructAlarm", transform);
-                        countdownBars[3].material = countdownMat[2];
-                        yield return new WaitForSeconds(1.5f);
-                        if (destructActive == false)
-                        {
-
-                        }
-                        else
-                        {
-                            Audio.PlaySoundAtTransform("destructAlarm", transform);
-                            countdownBars[4].material = countdownMat[2];
-                            yield return new WaitForSeconds(1.5f);
-                            if (destructActive == false)
-                            {
-
-                            }
-                            else
-                          {
-                              Audio.PlaySoundAtTransform("destructAlarm", transform);
-                              countdownBars[5].material = countdownMat[2];
-                              yield return new WaitForSeconds(1.5f);
-                              if (destructActive == false)
-                              {
-
-                              }
-                              else
-                              {
-                                  Audio.PlaySoundAtTransform("destructAlarm", transform);
-                                  countdownBars[6].material = countdownMat[2];
-                                  yield return new WaitForSeconds(1.5f);
-                                  if (destructActive == false)
-                                  {
-
-                                  }
-                                  else
-                                  {
-                                      Audio.PlaySoundAtTransform("destructAlarm", transform);
-                                      countdownBars[7].material = countdownMat[2];
-                                      yield return new WaitForSeconds(1.5f);
-                                      if (destructActive == false)
-                                      {
-
-                                      }
-                                      else
-                                      {
-                                          Audio.PlaySoundAtTransform("destructAlarm", transform);
-                                          countdownBars[8].material = countdownMat[2];
-                                          yield return new WaitForSeconds(1.5f);
-                                          if (destructActive == false)
-                                          {
-
-                                          }
-                                          else
-                                          {
-                                              Audio.PlaySoundAtTransform("destructAlarm", transform);
-                                              countdownBars[9].material = countdownMat[2];
-                                              yield return new WaitForSeconds(1.5f);
-                                              if (destructActive == false)
-                                              {
-
-                                              }
-                                              else
-                                              {
-                                                  Debug.LogFormat("[Lightspeed #{0}] WARP CORE OVERLOAD. SHIP DESTROYED.", moduleId);
-                                                  int manyStrikes = 0;
-                                                  while(manyStrikes < 1000)
-                                                  {
-                                                      GetComponent<KMBombModule>().HandleStrike();
-                                                      manyStrikes++;
-                                                  }
-                                              }
-                                          }
-                                      }
-                                  }
-                              }
-                          }
-                        }
-                    }
-                }
-            }
-        }
+	    Debug.LogFormat("[Lightspeed #{0}] WARP CORE OVERLOAD. SHIP DESTROYED.", moduleId);
+	    while(!shipDestroyed && !destructByTwitch)
+	    {
+		    GetComponent<KMBombModule>().HandleStrike();
+	    }
     }
 
     IEnumerator cancelDestruct()
     {
         destructionOperation = true;
         yield return new WaitForSeconds(0.1f);
-        countdownBars[9].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[8].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[7].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[6].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[5].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[4].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[3].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[2].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[1].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
-        countdownBars[0].material = countdownMat[0];
-        yield return new WaitForSeconds(0.1f);
+	    for (int i = 9; i >= 0; i--)
+	    {
+		    countdownBars[i].material = countdownMat[0];
+		    yield return new WaitForSeconds(0.1f);
+	    }
         destructionOperation = false;
     }
 
@@ -1917,4 +1712,415 @@ public class lightspeedScript : MonoBehaviour
             }
         }
     }
+
+	private string TwitchHelpMessage = "Switch between screens with !{0} open [screen].  {{valid screens are main, warp, target, officer, encrypt, engage}}. Set the warp speed with !{0} set warp 4. Cycle the planets with !{0} cycle planets. Set the planet with !{0} set planet vulcan. Cycle the commanding officers with !{0} cycle officers. Set the officer with !{0} set officer riker.\nEncrypt the data with !{0} set encryption 7480. Engage the warp drive with !{0} engage. Disengage the warp drive with !{0} disengage. Overload the warp core with !{0} activate auto destruct sequence. Cancel the auto destruct sequence with !{0} cancel auto destruct sequence.";
+
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+	    var split = command.ToLowerInvariant().Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+	    if (split[0] == "open")
+	    {
+		    switch (string.Join(" ", split.Skip(1).ToArray()))
+		    {
+				case "main":
+				case "stardate":
+					yield return null;
+					if (displayedScreen[0])
+						warpSpeedAccessButton.OnInteract();
+					else if (displayedScreen[1])
+						destinationAccessButton.OnInteract();
+					else if (displayedScreen[2])
+						officerAccessButton.OnInteract();
+					else if (displayedScreen[3])
+						encryptButton.OnInteract();
+					else if (displayedScreen[4])
+						engageButton.OnInteract();
+					break;
+				case "warp":
+				case "warp speed":
+					yield return null;
+					if (!displayedScreen[0])
+						warpSpeedAccessButton.OnInteract();
+					break;
+				case "destination":
+				case "target":
+				case "target destination":
+				case "location":
+				case "target location":
+					yield return null;
+					if (!displayedScreen[1])
+						destinationAccessButton.OnInteract();
+					break;
+				case "officer":
+				case "officers":
+				case "crew":
+					yield return null;
+					if (!displayedScreen[2])
+						officerAccessButton.OnInteract();
+					break;
+				case "encrypt":
+				case "encrytion":
+				case "code":
+					yield return null;
+					if (!displayedScreen[3])
+						encryptButton.OnInteract();
+					break;
+				case "engage":
+					yield return null;
+					if (!displayedScreen[4])
+						engageButton.OnInteract();
+					break;
+
+				default:
+					yield break;
+		    }
+	    }
+		else if (split[0] == "cycle")
+	    {
+		    if ((split.Length == 2 && new[] {"destinations", "locations"}.Contains(split[1])) || displayedScreen[1])
+		    {
+			    yield return null;
+			    if (!displayedScreen[1])
+			    {
+				    destinationAccessButton.OnInteract();
+				    yield return new WaitForSeconds(0.1f);
+			    }
+
+			    for (int i = 0; i < 12; i++)
+			    {
+				    planetRight.OnInteract();
+				    yield return new WaitForSeconds(1.5f);
+			    }
+		    }
+		    else if ((split.Length == 2 && split[1] == "officers") || displayedScreen[2])
+		    {
+			    yield return null;
+			    if (!displayedScreen[2])
+			    {
+				    officerAccessButton.OnInteract();
+				    yield return new WaitForSeconds(0.1f);
+			    }
+
+				for (int i = 0; i < 8; i++)
+			    {
+				    crewRight.OnInteract();
+				    yield return new WaitForSeconds(1.5f);
+			    }
+		    }
+	    }
+	    else if (new[] {"right", "r", "next", "n"}.Contains(split[0]) && split.Length == 1)
+	    {
+		    if (displayedScreen[0])
+		    {
+			    yield return null;
+			    increaseWarp.OnInteract();
+		    }
+			if (displayedScreen[1])
+		    {
+			    yield return null;
+			    planetRight.OnInteract();
+		    }
+			else if (displayedScreen[2])
+		    {
+			    yield return null;
+			    crewRight.OnInteract();
+		    }
+	    }
+		else if (new[] {"left", "l", "prev", "p"}.Contains(split[0]) && split.Length == 1)
+	    {
+		    if (displayedScreen[0])
+		    {
+			    yield return null;
+			    decreaseWarp.OnInteract();
+		    }
+
+			if (displayedScreen[1])
+		    {
+			    yield return null;
+			    planetLeft.OnInteract();
+		    }
+		    else if (displayedScreen[2])
+		    {
+			    yield return null;
+			    crewLeft.OnInteract();
+		    }
+		}
+		else if (split[0] == "set" || split[0] == "submit")
+	    {
+		    if (split.Length == 1)
+		    {
+			    if (displayedScreen[0])
+			    {
+				    yield return null;
+				    primeWarp.OnInteract();
+			    }
+
+				if (displayedScreen[1])
+			    {
+				    yield return null;
+				    layInCourse.OnInteract();
+			    }
+				else if (displayedScreen[2])
+			    {
+				    yield return null;
+				    assignCrew.OnInteract();
+			    }
+			}
+		    else if (split.Length > 2)
+		    {
+			    string setting = string.Join(" ", split.Skip(2).ToArray());
+			    switch (split[1])
+			    {
+					case "warp":
+						int speed;
+						if (!int.TryParse(setting, out speed) || speed < 1 || speed > 9) yield break;
+						yield return null;
+						if (!displayedScreen[0])
+						{
+							warpSpeedAccessButton.OnInteract();
+							yield return new WaitForSeconds(0.1f);
+						}
+
+						while (speed > setWarpLevel)
+						{
+							increaseWarp.OnInteract();
+							yield return new WaitForSeconds(0.1f);
+						}
+						while (speed < setWarpLevel)
+						{
+							decreaseWarp.OnInteract();
+							yield return new WaitForSeconds(0.1f);
+						}
+						primeWarp.OnInteract();
+
+						break;
+					case "destination":
+					case "location":
+					case "planet":
+						yield return null;
+						if (!displayedScreen[1])
+						{
+							destinationAccessButton.OnInteract();
+							yield return new WaitForSeconds(0.1f);
+						}
+
+						for (int i = 0; i < 12; i++)
+						{
+							if (displayedPlanetName.text.ToLowerInvariant().StartsWith(setting)) break;
+							planetRight.OnInteract();
+							yield return new WaitForSeconds(0.1f);
+							if (i == 11)
+							{
+								yield return "sendtochat Sorry, there are no planets named " + setting;
+								yield return "unsubmittablepenalty";
+								yield break;
+							}
+						}
+						yield return layInCourse.OnInteract();
+
+						break;
+					case "officer":
+					case "crew":
+						yield return null;
+						if (!displayedScreen[2])
+						{
+							officerAccessButton.OnInteract();
+							yield return new WaitForSeconds(0.1f);
+						}
+
+						for (int i = 0; i < 8; i++)
+						{
+							if (crewNameText.text.ToLowerInvariant().StartsWith(setting)) break;
+							crewRight.OnInteract();
+							yield return new WaitForSeconds(0.1f);
+							if (i == 7)
+							{
+								yield return "sendtochat Sorry, there are no commanding officer named " + setting;
+								yield return "unsubmittablepenalty";
+								yield break;
+							}
+						}
+						yield return assignCrew.OnInteract();
+						break;
+					case "encrypt":
+					case "encryption":
+					case "code":
+						int code;
+						if (setting.Length != 4 || !int.TryParse(setting, out code) || code < 0) yield break;
+
+						yield return null;
+						if (!displayedScreen[2])
+						{
+							encryptButton.OnInteract();
+							yield return new WaitForSeconds(0.1f);
+						}
+
+						for (int i = 0; i < 4; i++)
+						{
+							keypad[setting[i] - '0'].OnInteract();
+							yield return new WaitForSeconds(0.1f);
+						}
+						encryptSubmitButton.OnInteract();
+
+						break;
+			    }
+		    }
+	    }
+
+		else if (command == "engage" && !destructActive && !destructionOperation && !engageActive && !engageOperation)
+	    {
+		    yield return null;
+		    if (!displayedScreen[4])
+		    {
+			    engageButton.OnInteract();
+			    yield return new WaitForSeconds(0.1f);
+		    }
+
+		    engageSubmitButton.OnInteract();
+		    if (warpDisplayText.text == correctWarpSpeed.ToString() && destinationDisplayText.text == correctPlanet &&
+		        submittedOfficer == correctCrew && dataEncrypted)
+			    yield return "solve";
+		    else
+			    yield return "strike";
+	    }
+
+		else if (command == "disengage" && !destructActive && !destructionOperation && engageActive && !engageOperation)
+	    {
+		    yield return null;
+		    if (!displayedScreen[4])
+		    {
+			    engageButton.OnInteract();
+			    yield return new WaitForSeconds(0.1f);
+		    }
+
+		    engageSubmitButton.OnInteract();
+	    }
+
+	    else if (command == "activate auto destruct sequence" && !destructActive && !destructionOperation && !engageActive && !engageOperation)
+	    {
+		    yield return string.Format("antitroll Sorry, {0} {1} has not given you permission to activate the auto destruct sequence.", rankNames[7], selectedCrew[7]);
+		    yield return null;
+
+		    if (!displayedScreen[4])
+		    {
+			    engageButton.OnInteract();
+			    yield return new WaitForSeconds(0.1f);
+		    }
+
+		    destructButton.OnInteract();
+		    destructByTwitch = true;
+		    yield return "detonate 17";
+	    }
+		else if (command == "cancel auto destruct sequence" && destructActive && !destructionOperation && !engageActive && !engageOperation)
+	    {
+		    yield return null;
+
+		    if (!displayedScreen[4])
+		    {
+			    engageButton.OnInteract();
+			    yield return new WaitForSeconds(0.1f);
+		    }
+
+			destructButton.OnInteract();
+			yield return "cancel detonation";
+	    }
+    }
+
+	IEnumerator TwitchHandleForcedSolve()
+	{
+		if (warpDisplayText.text == correctWarpSpeed.ToString() && destinationDisplayText.text == correctPlanet && submittedOfficer == correctCrew && dataEncrypted)
+		{
+			if (!displayedScreen[4])
+			{
+				engageButton.OnInteract();
+				yield return new WaitForSeconds(0.1f);
+				if(!engageActive)
+					engageSubmitButton.OnInteract();
+			}
+
+			yield break;
+		}
+
+		if (dataEncrypted)
+		{
+			if (!displayedScreen[3])
+			{
+				encryptButton.OnInteract();
+				yield return new WaitForSeconds(0.1f);
+			}
+
+			while (enteredEncryptionCode.Length > 0 && enteredEncryptionCode.Length < 4)
+			{
+				keypad[0].OnInteract();
+				yield return new WaitForSeconds(0.1f);
+			}
+
+			for (int i = 0; i < 4; i++)
+			{
+				keypad[correctEncryption[i] - '0'].OnInteract();
+				yield return new WaitForSeconds(0.1f);
+			}
+
+			encryptSubmitButton.OnInteract();
+			while (dataEncrypted || submittingAnswer) yield return true;
+		}
+
+		if (!displayedScreen[0])
+		{
+			warpSpeedAccessButton.OnInteract();
+			yield return new WaitForSeconds(0.1f);
+		}
+
+		while (correctWarpSpeed > setWarpLevel)
+		{
+			increaseWarp.OnInteract();
+			yield return new WaitForSeconds(0.1f);
+		}
+
+		while (correctWarpSpeed < setWarpLevel)
+		{
+			decreaseWarp.OnInteract();
+			yield return new WaitForSeconds(0.1f);
+		}
+		primeWarp.OnInteract();
+		while (submittingAnswer) yield return true;
+
+		destinationAccessButton.OnInteract();
+		while (!displayedPlanetName.text.Equals(correctPlanet))
+		{
+			planetRight.OnInteract();
+			yield return new WaitForSeconds(0.1f);
+		}
+		layInCourse.OnInteract();
+		while (submittingAnswer) yield return true;
+
+		officerAccessButton.OnInteract();
+		yield return new WaitForSeconds(0.1f);
+
+		while (!crewNameText.text.Equals(correctCrew))
+		{
+			crewRight.OnInteract();
+			yield return new WaitForSeconds(0.1f);
+		}
+		assignCrew.OnInteract();
+		while (submittingAnswer) yield return true;
+
+		encryptButton.OnInteract();
+		yield return new WaitForSeconds(0.1f);
+
+		for (int i = 0; i < 4; i++)
+		{
+			keypad[correctEncryption[i] - '0'].OnInteract();
+			yield return new WaitForSeconds(0.1f);
+		}
+
+		encryptSubmitButton.OnInteract();
+		yield return new WaitForSeconds(0.1f);
+
+		engageButton.OnInteract();
+		yield return new WaitForSeconds(0.1f);
+		engageSubmitButton.OnInteract();
+
+
+	}
 }
