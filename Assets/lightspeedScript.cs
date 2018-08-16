@@ -1475,15 +1475,15 @@ public class lightspeedScript : MonoBehaviour
                 }
                 else if(quadrantIndex == 1)
                 {
-                    quadrantPoint[3].material = quadrantActive;
+                    quadrantPoint[2].material = quadrantActive;
                 }
                 else if(quadrantIndex == 2)
                 {
-                    quadrantPoint[1].material = quadrantActive;
+                    quadrantPoint[3].material = quadrantActive;
                 }
                 else if(quadrantIndex == 3)
                 {
-                    quadrantPoint[2].material = quadrantActive;
+                    quadrantPoint[1].material = quadrantActive;
                 }
             }
             else if(colorIndex == 2)
