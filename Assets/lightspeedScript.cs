@@ -1713,7 +1713,7 @@ public class lightspeedScript : MonoBehaviour
         }
     }
 
-	private string TwitchHelpMessage = "Switch between screens with !{0} open [screen].  {{valid screens are main, warp, target, officer, encrypt, engage}}. Set the warp speed with !{0} set warp 4. Cycle the planets with !{0} cycle planets. Set the planet with !{0} set planet vulcan. Cycle the commanding officers with !{0} cycle officers. Set the officer with !{0} set officer riker.\nEncrypt the data with !{0} set encryption 7480. Engage the warp drive with !{0} engage. Disengage the warp drive with !{0} disengage. Overload the warp core with !{0} activate auto destruct sequence. Cancel the auto destruct sequence with !{0} cancel auto destruct sequence.";
+	private string TwitchHelpMessage = "Switch between screens with !{0} open [screen].  {{valid screens are main, warp, target, officer, encrypt, engage}}. Set the warp speed with !{0} set warp 4. Cycle the planets with !{0} cycle planets. Set the planet with !{0} set planet vulcan. Cycle the commanding officers with !{0} cycle officers. Set the officer with !{0} set officer riker.\nEncrypt/Decrypt the data with !{0} set encryption 7480 or !{0} set decryption 7480. Engage the warp drive with !{0} engage. Disengage the warp drive with !{0} disengage. Overload the warp core with !{0} activate auto destruct sequence. Cancel the auto destruct sequence with !{0} cancel auto destruct sequence.";
 
     IEnumerator ProcessTwitchCommand(string command)
     {
@@ -1747,6 +1747,7 @@ public class lightspeedScript : MonoBehaviour
 				case "target destination":
 				case "location":
 				case "target location":
+				case "planet":
 					yield return null;
 					if (!displayedScreen[1])
 						destinationAccessButton.OnInteract();
@@ -1759,7 +1760,9 @@ public class lightspeedScript : MonoBehaviour
 						officerAccessButton.OnInteract();
 					break;
 				case "encrypt":
+				case "decyrpt":
 				case "encrytion":
+				case "decryption":
 				case "code":
 					yield return null;
 					if (!displayedScreen[3])
@@ -1906,12 +1909,12 @@ public class lightspeedScript : MonoBehaviour
 
 						for (int i = 0; i < 12; i++)
 						{
-							if (displayedPlanetName.text.ToLowerInvariant().StartsWith(setting.Replace("'", "ï¿½"))) break;
+							if (displayedPlanetName.text.ToLowerInvariant().StartsWith(setting.Replace("'", "’"))) break;
 							planetRight.OnInteract();
 							yield return new WaitForSeconds(0.1f);
 							if (i == 11)
 							{
-								if (PlanetNameExists(setting.Replace("'", "ï¿½")))
+								if (PlanetNameExists(setting.Replace("'", "’")))
 								{
 									yield return "sendtochat Sorry, there are no planets named " + setting;
 									yield return "unsubmittablepenalty";
@@ -1960,7 +1963,9 @@ public class lightspeedScript : MonoBehaviour
 						yield return assignCrew.OnInteract();
 						break;
 					case "encrypt":
+					case "decrypt":
 					case "encryption":
+					case "decryption":
 					case "code":
 						int code;
 						if (setting.Length != 4 || !int.TryParse(setting, out code) || code < 0) yield break;
