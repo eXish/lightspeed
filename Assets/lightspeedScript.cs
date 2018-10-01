@@ -1748,6 +1748,7 @@ public class lightspeedScript : MonoBehaviour
 				case "location":
 				case "target location":
 				case "planet":
+				case "planets":
 					yield return null;
 					if (!displayedScreen[1])
 						destinationAccessButton.OnInteract();
