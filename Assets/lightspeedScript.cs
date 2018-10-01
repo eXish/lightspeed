@@ -1906,7 +1906,7 @@ public class lightspeedScript : MonoBehaviour
 
 						for (int i = 0; i < 12; i++)
 						{
-							if (displayedPlanetName.text.ToLowerInvariant().StartsWith(setting)) break;
+							if (displayedPlanetName.text.ToLowerInvariant().StartsWith(setting.Replace("'", "�"))) break;
 							planetRight.OnInteract();
 							yield return new WaitForSeconds(0.1f);
 							if (i == 11)
