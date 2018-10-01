@@ -1949,7 +1949,7 @@ public class lightspeedScript : MonoBehaviour
 						if (setting.Length != 4 || !int.TryParse(setting, out code) || code < 0) yield break;
 
 						yield return null;
-						if (!displayedScreen[2])
+						if (!displayedScreen[3])
 						{
 							encryptButton.OnInteract();
 							yield return new WaitForSeconds(0.1f);
