@@ -1911,8 +1911,17 @@ public class lightspeedScript : MonoBehaviour
 							yield return new WaitForSeconds(0.1f);
 							if (i == 11)
 							{
-								yield return "sendtochat Sorry, there are no planets named " + setting;
-								yield return "unsubmittablepenalty";
+								if (PlanetNameExists(setting.Replace("'", "�")))
+								{
+									yield return "sendtochat Sorry, there are no planets named " + setting;
+									yield return "unsubmittablepenalty";
+								}
+								else
+								{
+									yield return string.Format(
+										"sendtochat Sorry, I asked {0} {1} if they knew of a planet named {2}. They are unaware of such a planet.",
+										rankNames[7], selectedCrew[7], setting);
+								}
 								yield break;
 							}
 						}
@@ -1935,8 +1944,16 @@ public class lightspeedScript : MonoBehaviour
 							yield return new WaitForSeconds(0.1f);
 							if (i == 7)
 							{
-								yield return "sendtochat Sorry, there are no commanding officer named " + setting;
-								yield return "unsubmittablepenalty";
+								if (CrewNameExists(setting))
+								{
+									yield return "sendtochat Sorry, there are no commanding officer named " + setting + " aboard this ship.";
+									yield return "unsubmittablepenalty";
+								}
+								else
+								{
+									yield return "sendtochat Sorry, I don't even know who this " + setting + " is that you are talking about.";
+								}
+
 								yield break;
 							}
 						}
@@ -2025,6 +2042,26 @@ public class lightspeedScript : MonoBehaviour
 			yield return "cancel detonation";
 	    }
     }
+
+	private bool CrewNameExists(string crewName)
+	{
+		bool result = crewmanNames.Any(x => x.StartsWith(crewName));
+		result |= ensignNames.Any(x => x.StartsWith(crewName));
+		result |= lieutenantNames.Any(x => x.StartsWith(crewName));
+		result |= lieutenantCommanderNames.Any(x => x.StartsWith(crewName));
+		result |= commanderNames.Any(x => x.StartsWith(crewName));
+		result |= captainNames.Any(x => x.StartsWith(crewName));
+		return result;
+	}
+
+	private bool PlanetNameExists(string planetName)
+	{
+		bool result = alphaQuadrantPlanets.Any(x => x.StartsWith(planetName));
+		result |= betaQuadrantPlanets.Any(x => x.StartsWith(planetName));
+		result |= gammaQuadrantPlanets.Any(x => x.StartsWith(planetName));
+		result |= deltaQuadrantPlanets.Any(x => x.StartsWith(planetName));
+		return result;
+	}
 
 	IEnumerator TwitchHandleForcedSolve()
 	{
