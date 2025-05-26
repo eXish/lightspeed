@@ -13,11 +13,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: lightspeed
   title: Lightspeed
-  description: "Lightspeed 1.2\n\u201CMr La Forge, set phasers to explode\u2026\u201D\n\nModule
+  description: "Lightspeed 1.21\n\u201CMr La Forge, set phasers to explode\u2026\u201D\n\nModule
     ID: lightspeed\n\nCreated by: Royal_Flu$h\nTwitchPlays implemented by: CaitSith2\n\nSpecial
     thanks to CaitSith2 for his coding assistance during the live stream build.\nThanks
     to SpaceScrew for testing many builds to fix the broken material issue.\nThanks
     to Timwi for the manual image.\n\nManual available here: https://ktane.timwi.de/HTML/Lightspeed.html"
-  version: 1.2
+  version: 1.21
   outputFolder: build
   previewImage: {fileID: 2800000, guid: cbaf707a188b4461f997f9bfc4945bfb, type: 3}

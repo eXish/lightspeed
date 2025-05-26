@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -1910,12 +1910,12 @@ public class lightspeedScript : MonoBehaviour
 
 						for (int i = 0; i < 12; i++)
 						{
-							if (displayedPlanetName.text.ToLowerInvariant().StartsWith(setting.Replace("'", "’"))) break;
+							if (displayedPlanetName.text.ToLowerInvariant().StartsWith(setting.Replace("'", "â€™"))) break;
 							planetRight.OnInteract();
 							yield return new WaitForSeconds(0.1f);
 							if (i == 11)
 							{
-								if (PlanetNameExists(setting.Replace("'", "’")))
+								if (PlanetNameExists(setting.Replace("'", "â€™")))
 								{
 									yield return "sendtochat Sorry, there are no planets named " + setting;
 									yield return "unsubmittablepenalty";
@@ -2051,21 +2051,21 @@ public class lightspeedScript : MonoBehaviour
 
 	private bool CrewNameExists(string crewName)
 	{
-		bool result = crewmanNames.Any(x => x.StartsWith(crewName));
-		result |= ensignNames.Any(x => x.StartsWith(crewName));
-		result |= lieutenantNames.Any(x => x.StartsWith(crewName));
-		result |= lieutenantCommanderNames.Any(x => x.StartsWith(crewName));
-		result |= commanderNames.Any(x => x.StartsWith(crewName));
-		result |= captainNames.Any(x => x.StartsWith(crewName));
+		bool result = crewmanNames.Any(x => x.ToLowerInvariant().StartsWith(crewName));
+		result |= ensignNames.Any(x => x.ToLowerInvariant().StartsWith(crewName));
+		result |= lieutenantNames.Any(x => x.ToLowerInvariant().StartsWith(crewName));
+		result |= lieutenantCommanderNames.Any(x => x.ToLowerInvariant().StartsWith(crewName));
+		result |= commanderNames.Any(x => x.ToLowerInvariant().StartsWith(crewName));
+		result |= captainNames.Any(x => x.ToLowerInvariant().StartsWith(crewName));
 		return result;
 	}
 
 	private bool PlanetNameExists(string planetName)
 	{
-		bool result = alphaQuadrantPlanets.Any(x => x.StartsWith(planetName));
-		result |= betaQuadrantPlanets.Any(x => x.StartsWith(planetName));
-		result |= gammaQuadrantPlanets.Any(x => x.StartsWith(planetName));
-		result |= deltaQuadrantPlanets.Any(x => x.StartsWith(planetName));
+		bool result = alphaQuadrantPlanets.Any(x => x.ToLowerInvariant().StartsWith(planetName));
+		result |= betaQuadrantPlanets.Any(x => x.ToLowerInvariant().StartsWith(planetName));
+		result |= gammaQuadrantPlanets.Any(x => x.ToLowerInvariant().StartsWith(planetName));
+		result |= deltaQuadrantPlanets.Any(x => x.ToLowerInvariant().StartsWith(planetName));
 		return result;
 	}
 
